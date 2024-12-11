@@ -2,7 +2,12 @@ using Microsoft.Data.Sqlite;
 
 class PresupuestosRepository: IPresupuestosRepository
 {
-    string connectionString = @"Data Source = db/Tienda.db;Cache=Shared";
+    private readonly string connectionString;
+
+    public PresupuestosRepository(string _ConnectionString)
+    {
+        connectionString = _ConnectionString;
+    }
     public void CrearPresupuesto(Presupuesto presupuesto)
     {
         string query1 = @"INSERT INTO Presupuestos (FechaCreacion, idCliente) VALUES (@fechaPre, @idC)";

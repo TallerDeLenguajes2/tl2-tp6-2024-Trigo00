@@ -18,6 +18,9 @@ builder.Services.AddSingleton<IPresupuestosRepository, PresupuestosRepository>()
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var cadenaDeConexion = builder.Configuration.GetConnectionString("SqliteConexion")!.ToString();
+builder.Services.AddSingleton(cadenaDeConexion);
+
 var app = builder.Build();
 
 //Usar sesiones

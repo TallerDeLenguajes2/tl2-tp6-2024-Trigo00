@@ -3,16 +3,14 @@ using Microsoft.Data.Sqlite;
 public class UserRepository: IUserRepository
 {
     //private readonly List<Usuario> _usuarios;
-    private string connectionString = @"Data Source = db/Tienda.db;Cache=Shared";
+    //private string connectionString = @"Data Source = db/Tienda.db;Cache=Shared";
 
-    // public UserRepository()
-    // {
-    //     _usuarios = new List<Usuario>
-    //     {
-    //         new Usuario{Id = 1, Username = "admin", Password = "admin123", Rol = Rol.Admin},
-    //         new Usuario{Id = 2, Username = "cliente", Password = "cliente123", Rol = Rol.Cliente}
-    //     };
-    // }
+    private readonly string connectionString;
+
+    public UserRepository(string _ConnectionString)
+    {
+        connectionString = _ConnectionString;
+    }
 
     // public Usuario ObtenerUsuario(string username, string password)
     // {

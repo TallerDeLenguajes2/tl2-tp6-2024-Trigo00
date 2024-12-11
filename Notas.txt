@@ -1,2 +1,3 @@
 Las validaciones van en el viewModels. Osea que debo agregar viewModels.
 En todos los metodos POST que reciban un viewModel, debo adaptarlos a los modelos originales y trabajar con esos. Basicamente todas las consultas y demas cosas realizadas en el repository, deben de trabajon con los datos puros
+Para dar mensajes al usuario cuando tenga un error o demas, puedo usar viewBag, o la forma mas comoda, es hacer un viewModel con un ErrorMessage y ahi cargar el mensaje que necesite.

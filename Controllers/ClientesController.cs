@@ -18,113 +18,178 @@ public class ClientesController : Controller
     [HttpGet]
     public IActionResult ListarClientes()
     {
-        var clientes = _clientesRepository.ObtenerClientes();
-        return View(clientes);
+        try 
+        {
+            var clientes = _clientesRepository.ObtenerClientes();
+            return View(clientes);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al listar clientes");
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 
     [HttpGet]
     public IActionResult CrearCliente()
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction ("Index", "Login");
-        if (HttpContext.Session.GetString("Rol") != "Admin")
+        try 
         {
-            TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
-            return RedirectToAction("Index");
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction("Index", "Login");
+            if (HttpContext.Session.GetString("Rol") != "Admin")
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
+                return RedirectToAction("Index");
+            }
+            return View();
         }
-        return View();
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al acceder a crear cliente");
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult CrearCliente(Cliente cliente)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction ("Index", "Login");
-        if (HttpContext.Session.GetString("Rol") != "Admin")
+        try 
         {
-            TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
-            return RedirectToAction("Index");
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction("Index", "Login");
+            if (HttpContext.Session.GetString("Rol") != "Admin")
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
+                return RedirectToAction("Index");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _clientesRepository.CrearCliente(cliente);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(cliente);
         }
-        if (ModelState.IsValid) // se utiliza para verificar si los datos enviados en un formulario cumplen con todas las reglas de validación definidas en el modelo de datos.
+        catch (Exception ex)
         {
-            _clientesRepository.CrearCliente(cliente);
-            return RedirectToAction(nameof(Index));
+            _logger.LogError(ex, "Error al crear cliente: {ClienteId}", cliente.Id);
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        return View(cliente);
     }
 
     [HttpGet]
     public IActionResult ModificarCliente(int id)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction ("Index", "Login");
-        if (HttpContext.Session.GetString("Rol") != "Admin")
+        try 
         {
-            TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
-            return RedirectToAction("Index");
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction("Index", "Login");
+            if (HttpContext.Session.GetString("Rol") != "Admin")
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
+                return RedirectToAction("Index");
+            }
+            var cliente = _clientesRepository.ObtenerCliente(id);
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+            return View(cliente);
         }
-        var cliente = _clientesRepository.ObtenerCliente(id);
-        if (cliente == null)
+        catch (Exception ex)
         {
-            return NotFound();
+            _logger.LogError(ex, "Error al modificar cliente con ID: {ClienteId}", id);
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        return View(cliente);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult ModificarCliente(int id, Cliente cliente)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction ("Index", "Login");
-        if (HttpContext.Session.GetString("Rol") != "Admin")
+        try 
         {
-            TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
-            return RedirectToAction("Index");
-        }
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction("Index", "Login");
+            if (HttpContext.Session.GetString("Rol") != "Admin")
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
+                return RedirectToAction("Index");
+            }
 
-        if (ModelState.IsValid)
-        {
-            _clientesRepository.ModificarCliente(id, cliente);
-            return RedirectToAction(nameof(Index));
+            if (ModelState.IsValid)
+            {
+                _clientesRepository.ModificarCliente(id, cliente);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(cliente);
         }
-        return View(cliente);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al modificar cliente con ID: {ClienteId}", id);
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 
     [HttpGet]
     public IActionResult EliminarCliente(int id)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction ("Index", "Login");
-        if (HttpContext.Session.GetString("Rol") != "Admin")
+        try 
         {
-            TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
-            return RedirectToAction("Index");
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction("Index", "Login");
+            if (HttpContext.Session.GetString("Rol") != "Admin")
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
+                return RedirectToAction("Index");
+            }
+            var cliente = _clientesRepository.ObtenerCliente(id);
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+            return View(cliente);
         }
-        var cliente = _clientesRepository.ObtenerCliente(id);
-        if (cliente == null)
+        catch (Exception ex)
         {
-            return NotFound();
+            _logger.LogError(ex, "Error al acceder a eliminar cliente con ID: {ClienteId}", id);
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        return View(cliente);
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken] //Es una buena práctica proteger las acciones POST con tokens antifalsificación para prevenir ataques Cross-Site Request Forgery (CSRF).
+    [ValidateAntiForgeryToken]
     public IActionResult EliminarClienteConfirmado(int id)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction ("Index", "Login");
-        if (HttpContext.Session.GetString("Rol") != "Admin")
+        try 
         {
-            TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
-            return RedirectToAction("Index");
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction("Index", "Login");
+            if (HttpContext.Session.GetString("Rol") != "Admin")
+            {
+                TempData["ErrorMessage"] = "No tienes permisos para realizar esta acción.";
+                return RedirectToAction("Index");
+            }
+            
+            _clientesRepository.EliminarCliente(id);
+            return RedirectToAction(nameof(Index));
         }
-        //En este caso no es necesario el ModelState.IsValid porque solo recibo un dato simple(id)
-        _clientesRepository.EliminarCliente(id);
-        return RedirectToAction(nameof(Index));
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al eliminar cliente con ID: {ClienteId}", id);
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 
     public IActionResult Index()
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction ("Index", "Login");
-        ViewData["Admin"] = HttpContext.Session.GetString("Rol") == "Admin";
-        return View(_clientesRepository.ObtenerClientes());
+        try 
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("User"))) return RedirectToAction("Index", "Login");
+            ViewData["Admin"] = HttpContext.Session.GetString("Rol") == "Admin";
+            return View(_clientesRepository.ObtenerClientes());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al acceder al índice de clientes");
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

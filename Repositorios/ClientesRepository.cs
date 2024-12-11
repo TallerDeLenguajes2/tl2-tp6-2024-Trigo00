@@ -3,8 +3,12 @@ using Microsoft.Data.Sqlite;
 
 public class ClientesRepository: IClientesRepository
 {
-    private string connectionString = @"Data Source = db/Tienda.db;Cache=Shared";
+    private readonly string connectionString;
 
+    public ClientesRepository(string _ConnectionString)
+    {
+        connectionString = _ConnectionString;
+    }
     public void CrearCliente(Cliente cliente)
     {
         string query = @"INSERT INTO Clientes (Nombre, Email, Telefono) VALUES (@nombre, @email, @telefono)";

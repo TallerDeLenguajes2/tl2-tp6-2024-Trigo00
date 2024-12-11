@@ -2,7 +2,11 @@ using Microsoft.Data.Sqlite;
 
 class ProductosRepository: IProductosRepository
 {
-    private string connectionString = @"Data Source = db/Tienda.db;Cache=Shared";
+    private readonly string connectionString;
+    public ProductosRepository(string _ConnectionString)
+    {
+        connectionString = _ConnectionString;
+    }
 
     public void CrearProducto(Producto producto)
     {
